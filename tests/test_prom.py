@@ -7,8 +7,10 @@ def test_product_list_page_for_heart_pictogram_1(product_list, browser):
     # Make sure that element is present on the DOM of a page and visible
     try:
         product_list.find_add_to_favourite_btn_to_check_presence()
+
     except NoSuchElementException:
         print(f'\nDefect found on page {browser.current_url}')
+        time.sleep(2)
         browser.save_screenshot('../tests/screenshots/scr_1.png')
         raise Exception('No element on page')
 
@@ -24,6 +26,7 @@ def test_product_page_for_heart_pictogram_2(sign_in, product_list, product, brow
         product.find_add_to_favourites_button()
     except NoSuchElementException:
         print(f'\nDefect found on page {browser.current_url}')
+        time.sleep(2)
         browser.save_screenshot('../tests/screenshots/scr_2.png')
         raise Exception('No element on page')
 
@@ -50,6 +53,7 @@ def test_favourites_counter_presence_3(sign_in, product_list, browser, favourite
         pass
     except AssertionError:
         print(f'\nDefect found on page {browser.current_url}')
+        time.sleep(2)
         browser.save_screenshot('../tests/screenshots/scr_3.png')
         raise AssertionError
 
@@ -63,7 +67,7 @@ def test_favourites_counter_value_4(sign_in, product_list, browser, favourites):
     sign_in.sign_in()
     # Click on the add-to-favourite element
     product_list.click_add_to_favourite_btn()
-    time.sleep(3)
+    time.sleep(2)
     # Click on favourites counter - navigate to the User`s Favourites Page
     product_list.click_favourites_counter()
     # Save counter element
@@ -75,5 +79,29 @@ def test_favourites_counter_value_4(sign_in, product_list, browser, favourites):
         assert counter_value == '1'
     except AssertionError:
         print(f'\nDefect found on page {browser.current_url}')
+        time.sleep(2)
         browser.save_screenshot('../tests/screenshots/scr_4.png')
         raise AssertionError
+
+
+def test_add_to_favourites_element_changes_5(sign_in, product_list, browser):
+    """Verify that element becomes different after clicking"""
+
+    # Sign in via e-mail
+    sign_in.sign_in()
+    # Save element`s attributes before the click
+    element_before_click = product_list.find_add_to_favourite_element_to_compare()
+    element_before_click_attr = element_before_click.get_attribute('data-tg-clicked')
+    # Click on the element
+    product_list.click_add_to_favourite_btn()
+    # Save element`s attributes after the click
+    element_after_click = product_list.find_add_to_favourite_element_to_compare()
+    element_after_click_attr = element_after_click.get_attribute('data-tg-clicked')
+
+    try:
+        assert element_before_click_attr != element_after_click_attr
+    except AssertionError:
+        print(f'\nDefect found on page {browser.current_url}')
+        time.sleep(2)
+        browser.save_screenshot('../tests/screenshots/scr_5.png')
+        raise Exception('Element doesn`t change attributes')
